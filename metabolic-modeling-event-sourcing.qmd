@@ -1,0 +1,60 @@
+---
+title: "In Pursuit of Total Reproducilibity"
+subtitle: "Marrying Metabolic Modeling with Event Sourcing"
+format:
+  html: default
+  pdf:
+    documentclass: scrartcl
+author:
+  - name: Moritz E. Beber
+    given: Moritz E.
+    family: Beber
+    orcid: 0000-0003-2406-1978
+abstract: >
+  We have a reproducibility crisis! Event sourcing may help. Honest!
+keywords: [metabolic modeling, event sourcing, reproducibility]
+reference-section-title: References
+bibliography: references.bib  
+license: "CC BY-SA 4.0"
+crossref:
+  lst-prefix: "Code Block"
+---
+
+## Introduction {#sec-intro}
+
+### Reproducilibity Crisis
+
+- We have a reproducibility crisis [@cobra_standards; @biosimulators; @frogg]
+- Even with de facto standard SBML [@sbml]:
+    - different software interprets differently
+    - variations in method implementations
+    - different mathematical solver backends
+- Most commonly, only a single SBML document is published (if any), but model variations are used for different parts of the code [@sedml; @kisao]
+- Model modifications are done in code (which may or may not be accessible)
+- experimental data integration with models is not captured by SBML [@sedml; @combine_archive]
+
+### Event Sourcing
+
+- In software development, event sourcing is gaining increasing popularity
+- Origins are said to be in modern double-entry book keeping[^1]
+- Core idea: application state is a projection of all past events, just like your bank account balance is the sum of all transactions
+- Notable implementation of event sourcing: [git](https://git-scm.com/)
+
+### Marriage
+
+- in this work, I explain event sourcing and CQRS for computational biologists
+- I outline a use for them in metabolic modeling and how their application can address the described crisis
+- I describe further uses of this technique in several scenarios of interest
+    - contribution history
+    - collaboration platform (à la [GitHub](https://github.com))
+    - local split between aggregate and:
+        - SBML document validator [@sbml_validator]
+        - simulator [@cobrapy; @optlang]
+        - functional tests [@memote]
+    - local proxy and remote server
+        - gRPC
+        - remote sessions [@jupyter]
+
+
+
+[^1]: [According to Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the practice started around the 13th century in Europe. Probably much earlier in China [author's note].
