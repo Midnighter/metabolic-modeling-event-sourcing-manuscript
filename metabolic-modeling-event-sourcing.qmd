@@ -52,9 +52,51 @@ crossref:
         - simulator [@cobrapy; @optlang]
         - functional tests [@memote]
     - local proxy and remote server
-        - gRPC
+        - RPC
         - remote sessions [@jupyter]
 
+## Methods
 
+### Event Sourcing in a Nut Shell
 
-[^1]: [According to Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the practice started around the 13th century in Europe. Probably much earlier in China [author's note].
+Most software applications, such as those used for computational simulations of biological systems, store the current state, for example, the state of a model, its parameter values, and so on, in memory. In order to reuse that current state, and avoid complete loss of all information stored in memory at shutdown, most applications allow for storing the state in a file or database. That means that we might make many modifications to the application state, but only ever store a representation of the latest state. With event sourcing, however, every change to the application state is recorded as a sequential event. It is that sequence of events that is then stored in a more permanent fashion in a file or database; and the application state can be restored by applying the series of events.
+
+What are the benefits of storing all sequential records of change? Throughout this work, I will attempt to convince you of several advantages of event sourcing, most importantly, the improved reproducibility afforded by this technique.
+
+#### Liquid Handling Example
+
+Let us consider the following scenario, we need to generate a growth medium for our cell cultures. We are in possession of a protocol that lists in minute detail which materials to combine in what quantities in order to arrive at the final growth medium in exact proportions. When we follow the protocol, we can assume that we arrive at the correct medium. However, the only way to confirm that fact, is to perform an extensive chemical analysis of our solution. The receptacle with our solution presents our "application state".
+
+Let us then consider a hypothetical liquid handling robot with an event sourced operating software. We can add reservoirs with basic components of our medium to the robot and we can load a well plate where to perform the mixing. Let's say we add reservoirs with water, glucose solution, and phosphate buffer as sources. We would also need to add a supply of pipetting tips. The software application for operating the robot has objects representing its state. Let us assume that those objects are `Reservoir`, `TargetPlate`, and `HandlingArm`. They might have properties as shown in @fig-liquid-objects.
+
+```{mermaid}
+%%| label: fig-liquid-objects
+%%| fig-cap: Objects used in the operating software of a hypothetical liquid handling robot. The basic type notation is borrowed from Python.
+
+classDiagram
+    class Reservoir {
+        +int position
+        +add()
+        +remove()
+    }
+
+    class TargetPlate {
+        +dict fill_state
+        +int num_rows
+        +int num_columns
+        +add()
+        +remove()
+        +add_to_well()
+        +remove_from_well()
+    }
+
+    class HandlingArm{
+        +bool is_loaded
+        +bool is_clean
+        +load_tips()
+        +eject_tips()
+        +transfer_liquid()
+    }
+```
+
+[^1]: [According to Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the practice started around the 13th century in Europe. Probably much earlier in other parts of the world [author's note].
