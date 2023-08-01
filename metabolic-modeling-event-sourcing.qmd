@@ -18,6 +18,7 @@ bibliography: references.bib
 license: "CC BY-SA 4.0"
 crossref:
   lst-prefix: "Code Block"
+  lst-title: "Code Block"
 ---
 
 ## Introduction {#sec-intro}
@@ -39,6 +40,8 @@ crossref:
 - Origins are said to be in modern double-entry book keeping[^1]
 - Core idea: application state is a projection of all past events, just like your bank account balance is the sum of all transactions
 - Notable implementation of event sourcing: [git](https://git-scm.com/)
+
+[^1]: [According to Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the practice started around the 13th century in Europe. Probably much earlier in other parts of the world [author's note].
 
 ### Marriage
 
@@ -65,38 +68,139 @@ What are the benefits of storing all sequential records of change? Throughout th
 
 #### Liquid Handling Example
 
-Let us consider the following scenario, we need to generate a growth medium for our cell cultures. We are in possession of a protocol that lists in minute detail which materials to combine in what quantities in order to arrive at the final growth medium in exact proportions. When we follow the protocol, we can assume that we arrive at the correct medium. However, the only way to confirm that fact, is to perform an extensive chemical analysis of our solution. The receptacle with our solution presents our "application state".
+Let us consider the following scenario, we need to generate a growth medium for our cell cultures. We are in possession of a protocol that lists in minute detail which materials to combine in what quantities in order to arrive at the final growth medium in exact proportions. When we follow the protocol, we can assume that we arrive at the correct medium. However, the only way to confirm that fact, is to perform an intricate chemical analysis of our solution. The receptacle with our solution presents our "application state".
 
-Let us then consider a hypothetical liquid handling robot with an event sourced operating software. We can add reservoirs with basic components of our medium to the robot and we can load a well plate where to perform the mixing. Let's say we add reservoirs with water, glucose solution, and phosphate buffer as sources. We would also need to add a supply of pipetting tips. The software application for operating the robot has objects representing its state. Let us assume that those objects are `Reservoir`, `TargetPlate`, and `HandlingArm`. They might have properties as shown in @fig-liquid-objects.
+Let us then consider a hypothetical liquid handling robot with an event sourced operating software. We can add reservoirs with basic components of our medium to the robot and we can load a 96-well plate (0.2 mL volume per well) where to perform the mixing. Let's say we add reservoirs with water, glucose solution, and phosphate buffer as sources. We would also need to add a supply of pipetting tips. The software application for operating the robot has objects representing its state. Let us assume that those objects are `Reservoir`, `TargetPlate`, and `HandlingArm`. Operations are performed via an application interface called `LiquidHandlingApplication`. They might have attributes and methods as shown in @fig-liquid-objects.
 
 ```{mermaid}
 %%| label: fig-liquid-objects
-%%| fig-cap: Objects used in the operating software of a hypothetical liquid handling robot. The basic type notation is borrowed from Python.
+%%| fig-cap: Objects used in the operating software of a hypothetical liquid handling robot. The basic type notation is borrowed from Python. The methods are shown without parameters.
 
 classDiagram
     class Reservoir {
         +int position
-        +add()
-        +remove()
+        +str description
     }
 
     class TargetPlate {
-        +dict fill_state
+        +int position
         +int num_rows
         +int num_columns
-        +add()
-        +remove()
+        +float well_volume
+        +dict fill_state
         +add_to_well()
         +remove_from_well()
     }
 
-    class HandlingArm{
+    class HandlingArm {
+        +int position
         +bool is_loaded
         +bool is_clean
+        +bool is_lowered
         +load_tips()
         +eject_tips()
+        +move()
+        +lower()
+        +raise()
+        +draw_liquid()
+        +dispense_liquid()
+    }
+
+    class LiquidHandlingApplication {
+        +add_reservoir()
+        +remove_reservoir()
+        +add_target_plate()
+        +remove_target_plate()
         +transfer_liquid()
     }
+    
+    LiquidHandlingApplication ..> Reservoir
+    LiquidHandlingApplication ..> TargetPlate
+    LiquidHandlingApplication ..> HandlingArm
 ```
 
-[^1]: [According to Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the practice started around the 13th century in Europe. Probably much earlier in other parts of the world [author's note].
+Our protocol for the growth medium might ask for 90% water, 9% glucose solution, and 1% phosphate buffer. We might therefore issue the following instructions.
+
+```{#lst-liquid-create-commands .python lst-cap="Commands for the hypothetical liquid handling robot setup."}
+app = LiquidHandlingApplication()
+water = app.add_reservoir("water")
+glucose = app.add_reservoir("glucose solution")
+phosphate = app.add_reservoir("phosphate buffer")
+target = app.add_target_plate(96_WELL_FORMAT)
+```
+
+The above commands (@lst-liquid-create-commands), when executed successfully, will lead to a sequence of events being recorded that might look like below (@fig-liquid-create-events).
+
+![The sequence of events emitted as a consequence of the setup commands.](./images/out/liquid-create-events.svg){#fig-liquid-create-events}
+
+What can we already learn from the few events shown in @fig-liquid-create-events?
+
+1. By convention, the names of events are chosen in past tense, because they are records of things that have already happened.
+2. There is a global order to the events as denoted here by the `sequence_index` property and shown visually by the order following the arrows from the top left.
+3. The changes to instance attributes are recorded in the events. In this case, all the events shown are special "creation" events that initialize all attributes.
+
+In a real application we would want to add a few more properties to our events, such as which class they belong to, the identifier of the instance they describe, a unique identifier for the event itself, and more. We can then issue further commands to perform the transfer of liquids as described in our protocol (@lst-liquid-transfer-commands).
+
+```{#lst-liquid-transfer-commands .python lst-cap="Commands for transferring liquids as required by our experimental protocol."}
+app.transfer_liquid(water, target, 0.18)
+app.transfer_liquid(glucose, target, 0.018)
+app.transfer_liquid(phosphate, target, 0.002)
+```
+
+The first of those liquid transfer commands might trigger a much longer series of events that globally continues from those shown in @fig-liquid-create-events. Due to the number of events, we ignore the second and third command in @lst-liquid-transfer-commands. The events are shown in @fig-liquid-transfer-events.
+
+![The sequence of events emitted as a consequence of the first command transferring water from its reservoir to the target plate.](./images/out/liquid-transfer-events.svg){#fig-liquid-transfer-events}
+
+What can we learn from the events shown in @fig-liquid-transfer-events in addition to what we have already deduced?
+
+1. The events only record those attributes that were actually changed by a command.
+2. The events provide a detailed log of everything that occurred in the system.
+
+All the events shown in @fig-liquid-create-events and @fig-liquid-transfer-events together form what is called the **event log** and it is of central importance. If we want to know (query) the state of an instance at a certain point in the sequence of events, we need to apply the changes recorded in all events concerning that instance in order to derive the state. This process is called a **projection**. We have seen that events can be quite verbose. Fortunately, computational storage space is generally fairly cheap. If projections become too computationally costly, we can resolve the problem by storing **snapshots** of a current instance's state in the event log at regular intervals.
+
+After issuing all commands shown in @lst-liquid-create-commands and @lst-liquid-transfer-commands, the resulting growth medium in the wells is the same as if we followed the experimental protocol manually. That means, the "real world" state is the same as before, however, the event log enables us to do more.
+
+1. We can analyze the sequence of events to show that we have correctly implemented the experimental protocol. This is much more convenient than having to perform chemical analyses on the resulting medium.
+2. We can investigate the sequence of events at any point that we desire in order to identify potential mistakes that we may have made. This is also called **replaying** events.
+3. Similarly, we may look for opimtized sequences of events. This may be done by simulating the operation of the liquid handling robot and exploring alternative orders of commands.
+4. We can copy our event log and hand it to somebody else. That other person can then perfectly replicate our process by replaying the events and arriving at the same outcome. This serves the same purpose as a published experimental protocol but provides much stronger reproducibility guarantees as the operating software assures that we perform a perfect replicate of the process.
+
+### Command Query Responsibility Segregation
+
+A short summary of **Command Query Responsibility Segregation** (CQRS) is that we can use different models (formats) to update state from models to read state. Changing state is done by commands, whereas reading state is performed via queries. It is important to note that the command model requires its own representation of the state in order to determine whether a certain command may be performed. In the previously described liquid handling scenario, we were already implicitly using CQRS, even though we did not make use of alternative read models. However, those alternatives will be important in applications described later on.
+
+## Results
+
+In the following, I will outline a few examples that are enabled by applying event sourcing to computational systems biology.
+
+### Contribution History
+
+Scientific contributions and public records demonstrating said contributions, are of vital importance to academics. In the context of computational systems biology, one major contribution is the definition of a model for simulation. The _de facto_ standard for defining such models in a machine readable format is the Systems Biology Markup Language (SBML)[@sbml]. Although the SBML specification[^2] allows for recording contributions at a very detailed level, i.e., every element in the document may contain annotations with contributors described in the vCard4 format[^3], in practice, I have only seen this done at the level of the entire model.
+
+[^2]: [SBML Level 3 Version 2 Core, Section 6.6, pp. 105.](https://identifiers.org/combine.specifications:sbml.level-3.version-2.core.release-2)
+[^3]: <https://datatracker.ietf.org/doc/html/rfc6350>
+
+It is certainly not surprising that the full amount of detail afforded by the SBML specification is not used, as it would be very cumbersome to manually track this information. However, if we were to create an SBML document with an event sourced software, we could identify each user of that software by, for example, an [ORCID](https://orcid.org/), and reference the user in the event that is recording a change to the model. Such a software would then require functionality to transform the event log into an SBML document that correctly uses SBML annotations to detail the modification history of every model element. One could then create accurate contribution statistics from such SBML documents. This example already leads us to the next section, since creating an SBML document from an event log is nothing else but an alternative query model.
+
+### Alternative Models
+
+* SBML validator
+* Simulator
+* Functional tests
+
+### Local Proxy
+
+* RPC
+* remote sessions
+
+### Collaboration Platform
+
+* GitHub
+
+## Discussion
+
+## Conclusion
+
+## Acknowledgements
+
+I would like to thank John Bywater, the author of a [Python framework for event sourcing](https://eventsourcing.readthedocs.io/), for his patience in answering my questions and his openness to general discussions.

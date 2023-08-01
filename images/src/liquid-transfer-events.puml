@@ -1,0 +1,136 @@
+@startuml
+!$index = 5
+
+object "__:ArmMoved__" as e1 {
+  !$index = $index + 1
+  sequence_index = $index
+  position = 20
+}
+
+object "__:ArmLowered__" as e2 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = true
+}
+
+object "__:TipsLoaded__" as e3 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_loaded = true
+  is_clean = true
+}
+
+object "__:ArmRaised__" as e4 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = false
+}
+
+object "__:ArmMoved__" as e5 {
+  !$index = $index + 1
+  sequence_index = $index
+  position = 1
+}
+
+object "__:ArmLowered__" as e6 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = true
+}
+
+object "__:LiquidRemoved__" as e7 {
+  !$index = $index + 1
+  sequence_index = $index
+  amount = 0.18
+}
+
+object "__:LiquidDrawn__" as e8 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_loaded = true
+  is_clean = false
+  amount = 0.18
+}
+
+object "__:ArmRaised__" as e9 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = false
+}
+
+object "__:ArmMoved__" as e10 {
+  !$index = $index + 1
+  sequence_index = $index
+  position = 10
+}
+
+object "__:ArmLowered__" as e11 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = true
+}
+
+object "__:LiquidAdded__" as e12 {
+  !$index = $index + 1
+  sequence_index = $index
+  wells = [(1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1)]
+  amount = 0.18
+}
+
+object "__:LiquidDispensed__" as e13 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_loaded = false
+  amount = 0.18
+}
+
+object "__:ArmRaised__" as e14 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = false
+}
+
+object "__:ArmMoved__" as e15 {
+  !$index = $index + 1
+  sequence_index = $index
+  position = 30
+}
+
+object "__:ArmLowered__" as e16 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = true
+}
+
+object "__:TipsEjected__" as e17 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_loaded = false
+  is_clean = false
+}
+
+object "__:ArmRaised__" as e18 {
+  !$index = $index + 1
+  sequence_index = $index
+  is_lowered = false
+}
+
+e1 -r-> e2
+e2 -r-> e3
+e3 -r-> e4
+e4 -d-> e5
+e5 -l-> e6
+e6 -l-> e7
+e7 -l-> e8
+e8 -d-> e9
+e9 -r-> e10
+e10 -r-> e11
+e11 -d-> e12
+e12 -l-> e13
+e13 -d-> e14
+e14 -r-> e15
+e15 -r-> e16
+e16 -d-> e17
+e17 -l-> e18
+
+@enduml
