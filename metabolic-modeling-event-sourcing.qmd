@@ -171,7 +171,9 @@ A short summary of **Command Query Responsibility Segregation** (CQRS) is that w
 
 ## Results
 
-In the following, I will outline a few examples that are enabled by applying event sourcing to computational systems biology.
+In the following, I will outline a few examples that are enabled by applying event sourcing to computational systems biology. They each highlight specific advantages of this technique and in particular the benefits of an event log. We already discussed general benefits in the liquid handling example section above, but I want to emphasize again how the event log can alleviate one particular problem observed with current publication practices. For convenience, typically only a single SBML document describing a particular model state is attached to a publication. However, an analysis described in a publication needs to explore many variations of this model. In the best case, these alternative scenarios are available as source code files that load the SBML document and modify the model further via code instructions. In the worst case, such modifications are not even described in text form, thus severly hampering reproducbility of published results.
+
+With an event-sourced simulation software, it would be possible to provide the full event log and specify which published result was obtained at which point in the event log. Others can then replay the events to that point in the log, and reproduce the model state perfectly.
 
 ### Contribution History
 
@@ -180,9 +182,12 @@ Scientific contributions and public records demonstrating said contributions, ar
 [^2]: [SBML Level 3 Version 2 Core, Section 6.6, pp. 105.](https://identifiers.org/combine.specifications:sbml.level-3.version-2.core.release-2)
 [^3]: <https://datatracker.ietf.org/doc/html/rfc6350>
 
-It is certainly not surprising that the full amount of detail afforded by the SBML specification is not used, as it would be very cumbersome to manually track this information. However, if we were to create an SBML document with an event sourced software, we could identify each user of that software by, for example, an [ORCID](https://orcid.org/), and reference the user in the event that is recording a change to the model. Such a software would then require functionality to transform the event log into an SBML document that correctly uses SBML annotations to detail the modification history of every model element. One could then create accurate contribution statistics from such SBML documents. This example already leads us to the next section, since creating an SBML document from an event log is nothing else but an alternative query model.
+It is certainly not surprising that the full amount of detail afforded by the SBML specification is not used, as it would be very cumbersome to manually track this information. However, if we were to create an SBML document with an event sourced software, we could identify each user of that software by, for example, an [ORCID](https://orcid.org/), and reference the user in the event that is recording a change to the model. This could serve as an audit trail of contributions to the model. Such a software would then require functionality to transform the event log into an SBML document that correctly uses SBML annotations to detail the modification history of every model element. Other tools could then create accurate contribution statistics from such SBML documents. This example already leads us to the next section, since creating an SBML document from an event log is nothing else but an alternative read model.
 
-### Alternative Models
+### Alternative Read Models
+
+Let us assume that we have an event-sourced software for manipulating computational systems biology models (most often those are either kinetic or constraint-based models). This is our command model. Our application will produce an event log that can then be read by other applications. Those other applications can then project those events into other formats. Importantly, those formats may only be used for reading, i.e., they are query models, whereas modifications must be made through the previous command model. Our event-sourced software may thus consist of a system of applications with one command model and several downstream query models constructed from following one or more upstream event logs.
+
 
 * SBML validator
 * Simulator
