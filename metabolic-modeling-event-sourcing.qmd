@@ -155,7 +155,7 @@ Another important benefit of event-driven software architectures is that they af
 
 We can take this further by considering that a user of this software may not even need to have installed our software system, but can interact with the model manipulation and other applications via a client that performs **remote procedure calls** (RPCs). This client might either be a graphical interface or a small library of functions that exposes the **application programming interface** (API) of our system. These two modes of interaction are visualized in @fig-escsbs. Besides circumventing installation, this design has two additional benefits:
 
-1. Mathematical solvers for a model simulation application may be proprietary or particularly difficult to install. In this way, we can offer these capabilities to a wider user audience.
+1. Mathematical solvers for a model simulation application may be proprietary or particularly difficult to install. In this way, we can offer these capabilities to a wider user audience. Something similar was done in @biosimulators.
 2. It is less work to develop and maintain a client library compared to the full system. Thus we can reach a larger user base by providing clients in multiple programming languages.
 
 ![.](./images/out/escsbs.svg){#fig-escsbs}
@@ -164,12 +164,28 @@ A popular example of such a setup is Jupyter[@jupyter], which offers a rich Pyth
 
 ### Collaboration Platform
 
-* GitHub
+As mentioned in the introduction, one of the premier examples of event-sourced software is [git](https://git-scm.com/). "Git is a free and open source distributed version control system [...]". Distributed means that git affords both local and remote work between multiple parties. The central concept of git is that a user can record changes to files under git's control. Each recorded set of changes is an event, called commit. Git allows for a diverging event log, such a diversion is called a branch. Git also has facilities for merging branches back together and resolving conflicts between the branches.
 
-## Discussion
+If we take all of the above application examples together, we might arrive at the concept of an online collaboration platform, just as, for example, [GitHub](https://github.com/) and [GitLab](https://gitlab.com/) have done for git. We already suggested using git as part of the workflow to develop metabolic models (in SBML) in @memote, but here we can develop these concepts further into a full service platform.
 
-## Conclusion
+Such a full service online collaboration platform has many fine details to decide on, but in broad strokes it might provide the following features:
+
+* As outlined above, such a platform should offer both graphical and programmatic interfaces to its API.
+* Every user contribution should be tracked and exposed.
+* There should be central repositories for all model components of interest that users can collaborate on improving and expanding. For metabolic models, for example, the definition of metabolites and reaction stoichiometries is of central importance.
+* Every process of collaboration should be backed by branching and merging facilities as seen in git. All suggested changes need to be reviewed, perhaps through processes as seen in [Wikipedia](https://www.wikipedia.org/) and pull/merge requests on GitHub/GitLab.
+* Users would then be able to include components from the central repositories to develop specific models.
+* Every contributed change might automatically undergo a series of static and functional checks, allowing all collaborators to assess the impact of that change.
+* Part of the functional checks could be a comparison of simulated predictions with real world data.
+* Each version of a model, given by its history of changes, will automatically be available as an SBML document.
+* The exact contributors to a model and the size of their contributions should be publicly visible and considered on publication.
+
+## Discussion and Conclusion
+
+In this work, I have introduced the event sourcing technique and outlined several potential applications to the field of computational systems biology. I am convinced that the complete history of changes to models provided by their event logs, as well as the ability to exchange and perfectly reproduce processes via the event log, can overcome most of today's challenges with reproducibility. Furthermore, the new possibilities for collaboration and transparency have the potential to transform and accelerate how we work in computational systems biology today.
+
+Although event sourcing as a technique certainly also has its drawbacks, I see the main challenges for bringing the benefits to bear in finding the right funding that can attract the skilled experts required.
 
 ## Acknowledgements
 
-I would like to thank John Bywater, the author of a [Python framework for event sourcing](https://eventsourcing.readthedocs.io/), for his patience in answering my questions and his openness to general discussions.
+I would like to thank John Bywater, the author of a [Python framework for event sourcing](https://eventsourcing.readthedocs.io/), for his patience in answering my questions and his openness to general discussions. I would also like to thank [Zachary A. King, PhD](https://orcid.org/0000-0003-1238-1499) for showing me an early prototype of "lifelike", making me think about online collaboration for metabolic models.
