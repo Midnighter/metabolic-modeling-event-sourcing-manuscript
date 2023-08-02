@@ -1,0 +1,16 @@
+@startuml
+!include <C4/C4_Component>
+
+Container_Boundary(sim, "Model Manipulation Application") {
+    Component(repo, "DomainRepository", $descr="The domain repository persists events coming from domain model aggregates to storage.")
+}
+
+Container(file, "File System", "JSON")
+ContainerDb(sql, "Relational Database", "SQLite3, Postgres")
+ContainerDb(eventstore, "Event Store", "EventStoreDB")
+
+Rel_Down(repo, file, "persists to", "OS")
+Rel_Down(repo, sql, "persists to", "SQL")
+Rel_Down(repo, eventstore, "persists to", "gRPC")
+
+@enduml

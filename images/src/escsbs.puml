@@ -1,0 +1,20 @@
+@startuml
+!include <C4/C4_Container>
+
+Person_Ext(user, "User")
+System_Ext(browser, "Browser")
+System(client, "Client Library")
+
+System_Boundary(es, "Event-Sourced Computational Systems Biology Suite") {
+    Container(frontend, "Frontend Application")
+    Container(api, "API")
+}
+
+Rel_Down(user, browser, "uses")
+Rel_Down(browser, frontend, "exposes", "HTTPS")
+Rel_Down(frontend, api, "queries", "RPC")
+
+Rel_Down(user, client, "uses")
+Rel_Down(client, api, "exposes", "RPC")
+
+@enduml

@@ -70,54 +70,9 @@ What are the benefits of storing all sequential records of change? Throughout th
 
 Let us consider the following scenario, we need to generate a growth medium for our cell cultures. We are in possession of a protocol that lists in minute detail which materials to combine in what quantities in order to arrive at the final growth medium in exact proportions. When we follow the protocol, we can assume that we arrive at the correct medium. However, the only way to confirm that fact, is to perform an intricate chemical analysis of our solution. The receptacle with our solution presents our "application state".
 
-Let us then consider a hypothetical liquid handling robot with an event sourced operating software. We can add reservoirs with basic components of our medium to the robot and we can load a 96-well plate (0.2 mL volume per well) where to perform the mixing. Let's say we add reservoirs with water, glucose solution, and phosphate buffer as sources. We would also need to add a supply of pipetting tips. The software application for operating the robot has objects representing its state. Let us assume that those objects are `Reservoir`, `TargetPlate`, and `HandlingArm`. Operations are performed via an application interface called `LiquidHandlingApplication`. They might have attributes and methods as shown in @fig-liquid-objects.
+Let us then consider a hypothetical liquid handling robot with an event sourced operating software. We can add reservoirs with basic components of our medium to the robot and we can load a 96-well plate (0.2 mL volume per well) where to perform the mixing. Let's say we add reservoirs with water, glucose solution, and phosphate buffer as sources. We would also need to add a supply of pipetting tips. The software application for operating the robot has objects representing its state. Let us assume that those objects are `Reservoir`, `TargetPlate`, and `HandlingArm`. Operations are performed via an application interface called `LiquidHandlingApplication`. They might have attributes and methods as shown in @fig-liquid-classes.
 
-```{mermaid}
-%%| label: fig-liquid-objects
-%%| fig-cap: Objects used in the operating software of a hypothetical liquid handling robot. The basic type notation is borrowed from Python. The methods are shown without parameters.
-
-classDiagram
-    class Reservoir {
-        +int position
-        +str description
-    }
-
-    class TargetPlate {
-        +int position
-        +int num_rows
-        +int num_columns
-        +float well_volume
-        +dict fill_state
-        +add_to_well()
-        +remove_from_well()
-    }
-
-    class HandlingArm {
-        +int position
-        +bool is_loaded
-        +bool is_clean
-        +bool is_lowered
-        +load_tips()
-        +eject_tips()
-        +move()
-        +lower()
-        +raise()
-        +draw_liquid()
-        +dispense_liquid()
-    }
-
-    class LiquidHandlingApplication {
-        +add_reservoir()
-        +remove_reservoir()
-        +add_target_plate()
-        +remove_target_plate()
-        +transfer_liquid()
-    }
-    
-    LiquidHandlingApplication ..> Reservoir
-    LiquidHandlingApplication ..> TargetPlate
-    LiquidHandlingApplication ..> HandlingArm
-```
+![Classes used in the operating software of a hypothetical liquid handling robot. The basic type notation is borrowed from Python. The methods are shown without parameters.](./images/out/liquid-classes.svg){#fig-liquid-classes}
 
 Our protocol for the growth medium might ask for 90% water, 9% glucose solution, and 1% phosphate buffer. We might therefore issue the following instructions.
 
@@ -186,17 +141,26 @@ It is certainly not surprising that the full amount of detail afforded by the SB
 
 ### Alternative Read Models
 
-Let us assume that we have an event-sourced software for manipulating computational systems biology models (most often those are either kinetic or constraint-based models). This is our command model. Our application will produce an event log that can then be read by other applications. Those other applications can then project those events into other formats. Importantly, those formats may only be used for reading, i.e., they are query models, whereas modifications must be made through the previous command model. Our event-sourced software may thus consist of a system of applications with one command model and several downstream query models constructed from following one or more upstream event logs.
+Let us assume that we have an event-sourced software for manipulating computational systems biology models. Most often those will be either kinetic or constraint-based models. Our software will contain a **model manipulation application** which implements the command model. Our application will produce an event log that can then be read by other applications. Those other applications can then project those events into other formats. Importantly, those formats may only be used for reading, i.e., they are query models, whereas modifications must be made through the previous command model. Our event-sourced software may thus consist of a system of applications with one command model and several downstream query models constructed from following one or more upstream event logs. An example of such a system is shown in @fig-alternative-models.
 
+![.](./images/out/alternative-models.svg){#fig-alternative-models}
 
-* SBML validator
-* Simulator
-* Functional tests
+In @fig-alternative-models, we see three examples of downstream applications that subscribe to the event log of the model manipulation application. It is important to note that each downstream application will create different projections of those events. The shown SBML validator will probably make use of every detail in every event, meticulously mapping all content to an SBML document and validating that. A model simulation application for, e.g., a constraint-based metabolic model will likely only be interested in events describing the stoichiometry of reactions and metabolites, projecting that information into linear constraints of a mathematical optimization problem. A fictitious model test suite will use yet another set of events depending on the requirements of its checks. It might even include a model simulation application for functional tests.
 
-### Local Proxy
+### Local Versus Remote
 
-* RPC
-* remote sessions
+Another important benefit of event-driven software architectures is that they afford a fair amount of asynchronicity and decoupling in systems. Asynchronicity because a system only needs to react to events when they arrive, and decoupling because upstream applications need not know anything about the downstream subscribers to their event logs. For these reasons, it is a smaller change to switch from a local-only to a remote implementation. A downside of events is increased latency due to message passing. An example of a seamless change between a local and a remote implementation is event persistence as shown in @fig-event-log-persistence. A remote database may be hosted anywhere in the cloud, but even our different applications from @fig-alternative-models might be globally distributed by using an appropriate event bus.
+
+![.](./images/out/event-log-persistence.svg){#fig-event-log-persistence}
+
+We can take this further by considering that a user of this software may not even need to have installed our software system, but can interact with the model manipulation and other applications via a client that performs **remote procedure calls** (RPCs). This client might either be a graphical interface or a small library of functions that exposes the **application programming interface** (API) of our system. These two modes of interaction are visualized in @fig-escsbs. Besides circumventing installation, this design has two additional benefits:
+
+1. Mathematical solvers for a model simulation application may be proprietary or particularly difficult to install. In this way, we can offer these capabilities to a wider user audience.
+2. It is less work to develop and maintain a client library compared to the full system. Thus we can reach a larger user base by providing clients in multiple programming languages.
+
+![.](./images/out/escsbs.svg){#fig-escsbs}
+
+A popular example of such a setup is Jupyter[@jupyter], which offers a rich Python, Julia, or R interpreter via a web interface. The concept of managed sessions that users can connect to from any device is also extremely interesting in this context.
 
 ### Collaboration Platform
 

@@ -1,0 +1,15 @@
+@startuml
+!include <C4/C4_Container>
+
+System_Boundary(es, "Event-Sourced Computational Systems Biology Suite") {
+    Container(model_app, "Model Manipulation Application", $descr="Command model that allows to modify a computational systems biology model.")
+    Container(sbml_app, "SBML Validator", "libSBML", "Subscribes to the model event log and projects events to an SBML document. Said document is then validated on modification.")
+    Container(sim_app, "Model Simulation Application", $descr="Subscribes to the model event log and projects relevant events to a mathematical model suitable for simulation.")
+    Container(test_app, "Model Test Suite", $descr="Subscribes to the model event log and projects relevant events to a model suitable for a test suite that checks static and functional characteristics of the model.")
+}
+
+Rel_Up(sbml_app, model_app, "subscribes to")
+Rel_Up(sim_app, model_app, "subscribes to")
+Rel_Up(test_app, model_app, "subscribes to")
+
+@enduml
