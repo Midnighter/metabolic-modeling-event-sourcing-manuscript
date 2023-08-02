@@ -1,6 +1,6 @@
 ---
 title: "In Pursuit of Total Reproducilibity"
-subtitle: "Marrying Metabolic Modeling with Event Sourcing"
+subtitle: "Marrying Event Sourcing with Computational Systems Biology"
 format:
   html: default
   pdf:
@@ -12,7 +12,7 @@ author:
     orcid: 0000-0003-2406-1978
 abstract: >
   We have a reproducibility crisis! Event sourcing may help. Honest!
-keywords: [metabolic modeling, event sourcing, reproducibility]
+keywords: [computational systems biology, metabolic modeling, event sourcing, reproducibility]
 reference-section-title: References
 bibliography: references.bib  
 license: "CC BY-SA 4.0"
