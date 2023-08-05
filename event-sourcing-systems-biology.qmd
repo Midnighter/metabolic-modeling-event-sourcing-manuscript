@@ -25,44 +25,29 @@ crossref:
 
 ### Reproducilibity Crisis
 
-- We have a reproducibility crisis [@cobra_standards; @biosimulators; @frogg]
-- Even with de facto standard SBML [@sbml]:
-    - different software interprets differently
-    - variations in method implementations
-    - different mathematical solver backends
-- Most commonly, only a single SBML document is published (if any), but model variations are used for different parts of the code [@sedml; @kisao]
-- Model modifications are done in code (which may or may not be accessible)
-- experimental data integration with models is not captured by SBML [@sedml; @combine_archive]
+Although the field of computational systems biology is, in principle, in the enviable situation to be able to completely and deterministically define its own tools and artefacts, it has been caught in the reproducibility crisis [@baker_1500_2016;@ioannidis_why_2005] like many other sciences. Reproducibility, the ability of independent parties to replicate results by merely using their methodological description [@blinov_practical_2021;@bacon_opus_2016], is integral to the scientific method [@john_scientific_2017]. Reproducibility is not only vital to the house of cards of scientific progress, but also to the credibility of systems biology models in the eyes of the wider public, as well as their eligibility for use in critical decision making [@tatka_adapting_2023;@d_waltemath_how_2016].
 
-### Event Sourcing
+As reviewed by @blinov_practical_2021 and @d_waltemath_how_2016, reproducibility has been called into question in the related fields of computational biology, bioinformatics, medicine, artificial intelligence, neuroscience, and directly in computational systems biology by @tiwari_reproducibility_2021. On one hand, many of these are computational fields, so the lack of reproducibility is surprising. On the other hand, the nature of our scientific progress is such that we are building ever more complex models. As remarked by @blinov_practical_2021, combining credible systems biology models from various sources is a matter of accelerating research. Starting every modeling project from scratch is simply not feasible within our short life spans and even shorter period of graduate studies.
 
-- In software development, event sourcing is gaining increasing popularity
-- Origins are said to be in modern double-entry book keeping[^1]
-- Core idea: application state is a projection of all past events, just like your bank account balance is the sum of all transactions
-- Notable implementation of event sourcing: [git](https://git-scm.com/)
+### Standards
+
+There exist ample standards in computational systems biology [@tatka_adapting_2023;@niarakis_addressing_2022;@blinov_practical_2021;@d_waltemath_how_2016] defined by and for the community, that, when consistently applied, facilitate reuse, interoperability, and reproducibility of models. Although sharing research data and reproducible models is correlated with more citations [@hopfl_bayesian_2023;@piwowar_sharing_2007], the substantial effort required to conform with all the standards, is rewarded too little [@ioannidis_increasing_2014]. A situation that remains unchanged despite the clear benefits at an institutional level [@sandve_ten_2013].
+
+The main standards to consider are CellML [@clerx_cellml_2020], NeuroML [@gleeson_neuroml_2010], or SBML [@hucka_systems_2019] for model definition. BioPAX [@demir_biopax_2010] for describing biological pathways. MIRIAM [@novere_minimum_2005] for the critical task of component annotation, which requires reference to many resources. SBO [@courtot_controlled_2011;@juty_systems_2010] for anchoring the intended meaning of model components. PEtab [@schmiester_petabinteroperable_2021] for describing parameter estimation. MIASE [@waltemath_minimum_2011] and SED-ML [@waltemath_reproducible_2011] to describe model simulations. KiSAO [@zhukova_kinetic_2011] for describing simulation algorithms used. Finally, OMEX to describe metadata and package everything into a COMBINE archive [@bergmann_combine_2014]. As even the uninitiated can imagine, following all of the above standards to the letter, especially manually annotating all model components, requires an amount of effort that runs counter to today's fast publishing climate.
+
+### Marrying Event Sourcing
+
+Event sourcing is a software engineering technique that is gaining in popularity, but whose origins are somewhat unclear. Suffice to say that it relates to modern double-entry book keeping[^1] and has lately been popularized in a series of talks by Greg Young[^4]. The core idea of event sourcing is that application state is derived from all past events recording modifications to the state; just like your bank account's balance is the sum of all transactions. Besides banking, a prime example of event sourcing is [git](https://git-scm.com/). A version control software used by the vast majority of the software industry.
+In this work, I explain event sourcing for computational systems biologists and outline several applications of this technique for the task of automating generating standards compliant models, provide critical infrastructure, foster collaboration, and subsequently improve reproducibility.
 
 [^1]: [According to Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the practice started around the 13th century in Europe. Probably much earlier in other parts of the world [author's note].
-
-### Marriage
-
-- in this work, I explain event sourcing and CQRS for computational biologists
-- I outline a use for them in metabolic modeling and how their application can address the described crisis
-- I describe further uses of this technique in several scenarios of interest
-    - contribution history
-    - collaboration platform (à la [GitHub](https://github.com))
-    - local split between aggregate and:
-        - SBML document validator [@sbml_validator]
-        - simulator [@cobrapy; @optlang]
-        - functional tests [@memote]
-    - local proxy and remote server
-        - RPC
-        - remote sessions [@jupyter]
+[^4]: See, for example, [this recording at GOTO 2014](https://www.youtube.com/watch?v=8JKjvY4etTY). A book on the topic is apparently in preparation.
 
 ## Methods
 
 ### Event Sourcing in a Nut Shell
 
-Most software applications, such as those used for computational simulations of biological systems, store the current state, for example, the state of a model, its parameter values, and so on, in memory. In order to reuse that current state, and avoid complete loss of all information stored in memory at shutdown, most applications allow for storing the state in a file or database. That means that we might make many modifications to the application state, but only ever store a representation of the latest state. With event sourcing, however, every change to the application state is recorded as a sequential event. It is that sequence of events that is then stored in a more permanent fashion in a file or database; and the application state can be restored by applying the series of events.
+Most software applications, such as those used for computational simulations of biological systems, store the current state, for example, the state of a model, its parameter values, and so on, in memory. In order to reuse that current state, and avoid complete loss of all information stored in memory at shutdown, most applications allow for storing the state in a file or database. That means that we might make many modifications to the application state, but only ever store a representation of the latest state. With event sourcing, however, every change to the application state is recorded as a sequential event. It is that sequence of events that is then stored in a more permanent fashion in a file or database; and the application state can be restored by reading the series of events and applying their recorded changes.
 
 What are the benefits of storing all sequential records of change? Throughout this work, I will attempt to convince you of several advantages of event sourcing, most importantly, the improved reproducibility afforded by this technique.
 
@@ -160,7 +145,7 @@ We can take this further by considering that a user of this software may not eve
 
 ![.](./images/out/escsbs.svg){#fig-escsbs}
 
-A popular example of such a setup is Jupyter[@jupyter], which offers a rich Python, Julia, or R interpreter via a web interface. The concept of managed sessions that users can connect to from any device is also extremely interesting in this context.
+A popular example of such a setup is [Jupyter](https://jupyter.org/), which offers a rich Python, Julia, or R interpreter via a web interface. The concept of managed sessions that users can connect to from any device is also extremely interesting in this context.
 
 ### Collaboration Platform
 
@@ -180,7 +165,7 @@ Such a full service online collaboration platform has many fine details to decid
 * Each version of a model, given by its history of changes, will automatically be available as an SBML document.
 * The exact contributors to a model and the size of their contributions should be publicly visible and considered on publication.
 
-## Discussion and Conclusion
+## Discussion
 
 In this work, I have introduced the event sourcing technique and outlined several potential applications to the field of computational systems biology. I am convinced that the complete history of changes to models provided by their event logs, as well as the ability to exchange and perfectly reproduce processes via the event log, can overcome most of today's challenges with reproducibility. Furthermore, the new possibilities for collaboration and transparency have the potential to transform and accelerate how we work in computational systems biology today.
 
