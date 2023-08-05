@@ -117,7 +117,7 @@ With an event-sourced simulation software, it would be possible to provide the f
 
 ### Contribution History
 
-Scientific contributions and public records demonstrating said contributions, are of vital importance to academics. In the context of computational systems biology, one major contribution is the definition of a model for simulation. The _de facto_ standard for defining such models in a machine readable format is the Systems Biology Markup Language (SBML)[@sbml]. Although the SBML specification[^2] allows for recording contributions at a very detailed level, i.e., every element in the document may contain annotations with contributors described in the vCard4 format[^3], in practice, I have only seen this done at the level of the entire model.
+Scientific contributions and public records demonstrating said contributions, are of vital importance to academics. In the context of computational systems biology, one major contribution is the definition of a model for simulation. The _de facto_ standard for defining such models in a machine readable format is the Systems Biology Markup Language (SBML)[@hucka_systems_2019]. Although the SBML specification[^2] allows for recording contributions at a very detailed level, i.e., every element in the document may contain annotations with contributors described in the vCard4 format[^3], in practice, I have only seen this done at the level of the entire model.
 
 [^2]: [SBML Level 3 Version 2 Core, Section 6.6, pp. 105.](https://identifiers.org/combine.specifications:sbml.level-3.version-2.core.release-2)
 [^3]: <https://datatracker.ietf.org/doc/html/rfc6350>
@@ -140,18 +140,18 @@ Another important benefit of event-driven software architectures is that they af
 
 We can take this further by considering that a user of this software may not even need to have installed our software system, but can interact with the model manipulation and other applications via a client that performs **remote procedure calls** (RPCs). This client might either be a graphical interface or a small library of functions that exposes the **application programming interface** (API) of our system. These two modes of interaction are visualized in @fig-escsbs. Besides circumventing installation, this design has two additional benefits:
 
-1. Mathematical solvers for a model simulation application may be proprietary or particularly difficult to install. In this way, we can offer these capabilities to a wider user audience. Something similar was done in @biosimulators.
+1. Mathematical solvers for a model simulation application may be proprietary or particularly difficult to install. In this way, we can offer these capabilities to a wider user audience. Something similar was done in @shaikh_biosimulators_2022.
 2. It is less work to develop and maintain a client library compared to the full system. Thus we can reach a larger user base by providing clients in multiple programming languages.
 
 ![.](./images/out/escsbs.svg){#fig-escsbs}
 
-A popular example of such a setup is [Jupyter](https://jupyter.org/), which offers a rich Python, Julia, or R interpreter via a web interface. The concept of managed sessions that users can connect to from any device is also extremely interesting in this context.
+A popular example of such a setup is [Jupyter](https://jupyter.org/) [@b_e_granger_jupyter_2021], which offers a rich Python, Julia, or R interpreter via a web interface. The concept of managed sessions that users can connect to from any device is also extremely interesting in this context.
 
 ### Collaboration Platform
 
 As mentioned in the introduction, one of the premier examples of event-sourced software is [git](https://git-scm.com/). "Git is a free and open source distributed version control system [...]". Distributed means that git affords both local and remote work between multiple parties. The central concept of git is that a user can record changes to files under git's control. Each recorded set of changes is an event, called commit. Git allows for a diverging event log, such a diversion is called a branch. Git also has facilities for merging branches back together and resolving conflicts between the branches.
 
-If we take all of the above application examples together, we might arrive at the concept of an online collaboration platform, just as, for example, [GitHub](https://github.com/) and [GitLab](https://gitlab.com/) have done for git. We already suggested using git as part of the workflow to develop metabolic models (in SBML) in @memote, but here we can develop these concepts further into a full service platform.
+If we take all of the above application examples together, we might arrive at the concept of an online collaboration platform, just as, for example, [GitHub](https://github.com/) and [GitLab](https://gitlab.com/) have done for git. We already suggested using git as part of the workflow to develop metabolic models (in SBML) in @lieven_memote_2020, but here we can develop these concepts further into a full service platform.
 
 Such a full service online collaboration platform has many fine details to decide on, but in broad strokes it might provide the following features:
 
