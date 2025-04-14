@@ -25,135 +25,290 @@ crossref:
 
 ### Reproducilibity Crisis
 
-Although the field of computational systems biology is, in principle, in the enviable situation to be able to completely and deterministically define its own tools and artefacts, it has been caught in the reproducibility crisis [@baker_1500_2016;@ioannidis_why_2005] like many other sciences. Reproducibility, the ability of independent parties to replicate results by merely using their methodological description [@blinov_practical_2021;@bacon_opus_2016], is integral to the scientific method [@john_scientific_2017]. Reproducibility is not only vital to the house of cards of scientific progress, but also to the credibility of systems biology models in the eyes of the wider public, as well as their eligibility for use in critical decision making [@tatka_adapting_2023;@d_waltemath_how_2016].
+Although the field of computational systems biology is, in principle, in the
+enviable situation to be able to completely and deterministically define its own
+tools and artefacts, like many other sciences, it has been caught in the
+reproducibility crisis [@baker_1500_2016;@ioannidis_why_2005]. Reproducibility,
+the ability of independent parties to replicate results by merely using their
+methodological description [@blinov_practical_2021;@bacon_opus_2016], is
+integral to the scientific method [@john_scientific_2017]. Reproducibility is
+not only vital to the house of cards of scientific progress, but also to the
+credibility of systems biology models in the eyes of the wider public, as well
+as their eligibility for use in critical decision making
+[@tatka_adapting_2023;@d_waltemath_how_2016].
 
-As reviewed by @blinov_practical_2021 and @d_waltemath_how_2016, reproducibility has been called into question in the related fields of computational biology, bioinformatics, medicine, artificial intelligence, neuroscience, and directly in computational systems biology by @tiwari_reproducibility_2021. On one hand, many of these are computational fields, so the lack of reproducibility is surprising. On the other hand, the nature of our scientific progress is such that we are building ever more complex models. As remarked by @blinov_practical_2021, combining credible systems biology models from various sources is a matter of accelerating research. Starting every modeling project from scratch is simply not feasible within our short life spans and even shorter period of graduate studies.
+As reviewed by @blinov_practical_2021 and @d_waltemath_how_2016, reproducibility
+has been called into question in the related fields of computational biology,
+bioinformatics, medicine, artificial intelligence, neuroscience, and directly in
+computational systems biology by @tiwari_reproducibility_2021. On one hand, many
+of these are computational fields, so the lack of reproducibility is surprising.
+On the other hand, the nature of our scientific progress is such that we are
+building ever more complex models. As remarked by @blinov_practical_2021,
+combining credible systems biology models from various sources is a matter of
+accelerating research. Starting every modeling project from scratch is simply
+not feasible within our short life spans and even shorter period of graduate
+studies.
 
 ### Standards
 
-There exist ample standards in computational systems biology [@tatka_adapting_2023;@niarakis_addressing_2022;@blinov_practical_2021;@d_waltemath_how_2016] defined by and for the community, that, when consistently applied, facilitate reuse, interoperability, and reproducibility of models. Although sharing research data and reproducible models is correlated with more citations [@hopfl_bayesian_2023;@piwowar_sharing_2007], the substantial effort required to conform with all the standards, is rewarded too little [@ioannidis_increasing_2014]. A situation that remains unchanged despite the clear benefits at an institutional level [@sandve_ten_2013].
+There exist ample standards in computational systems biology
+[@tatka_adapting_2023;@niarakis_addressing_2022;@blinov_practical_2021;@d_waltemath_how_2016]
+defined by and for the community, that, when consistently applied, facilitate
+reuse, interoperability, and reproducibility of models. Although sharing
+research data and reproducible models is correlated with more citations
+[@hopfl_bayesian_2023;@piwowar_sharing_2007], the substantial effort required to
+conform with all the standards, is rewarded too little
+[@ioannidis_increasing_2014]. A situation that remains unchanged despite the
+clear benefits at an institutional level [@sandve_ten_2013].
 
-The main standards to consider are CellML [@clerx_cellml_2020], NeuroML [@gleeson_neuroml_2010], or SBML [@hucka_systems_2019] for model definition. BioPAX [@demir_biopax_2010] for describing biological pathways. MIRIAM [@novere_minimum_2005] for the critical task of component annotation, which requires reference to many resources. SBO [@courtot_controlled_2011;@juty_systems_2010] for anchoring the intended meaning of model components. PEtab [@schmiester_petabinteroperable_2021] for describing parameter estimation. MIASE [@waltemath_minimum_2011] and SED-ML [@waltemath_reproducible_2011] to describe model simulations. KiSAO [@zhukova_kinetic_2011] for describing simulation algorithms used. Finally, OMEX to describe metadata and package everything into a COMBINE archive [@bergmann_combine_2014]. As even the uninitiated can imagine, following all of the above standards to the letter, especially manually annotating all model components, requires an amount of effort that runs counter to today's fast publishing climate.
+The main standards to consider are CellML [@clerx_cellml_2020], NeuroML
+[@gleeson_neuroml_2010], or SBML [@hucka_systems_2019] for model definition.
+BioPAX [@demir_biopax_2010] for describing biological pathways. MIRIAM
+[@novere_minimum_2005] for the critical task of component annotation, which
+requires reference to many resources. SBO
+[@courtot_controlled_2011;@juty_systems_2010] for anchoring the intended meaning
+of model components. PEtab [@schmiester_petabinteroperable_2021] for describing
+parameter estimation. MIASE [@waltemath_minimum_2011] and SED-ML
+[@waltemath_reproducible_2011] to describe model simulations. KiSAO
+[@zhukova_kinetic_2011] for describing simulation algorithms used. Finally, OMEX
+to describe metadata and package everything into a COMBINE archive
+[@bergmann_combine_2014]. As even the uninitiated can imagine, following all of
+the above standards to the letter, especially manually annotating all model
+components, requires an amount of effort that runs counter to today's fast
+publishing climate and poses a challenge even to experts.
 
 ### Marrying Event Sourcing
 
-Event sourcing is a software engineering technique that is gaining in popularity, but whose origins are somewhat unclear. Suffice to say that it relates to modern double-entry book keeping[^1] and has lately been popularized in a series of talks by Greg Young[^4]. The core idea of event sourcing is that application state is derived from all past events recording modifications to the state; just like your bank account's balance is the sum of all transactions. Besides banking, a prime example of event sourcing is [git](https://git-scm.com/). A version control software used by the vast majority of the software industry.
-In this work, I explain event sourcing for computational systems biologists and outline several applications of this technique for the task of automating generating standards compliant models, provide critical infrastructure, foster collaboration, and subsequently improve reproducibility.
+Event sourcing is a software engineering technique that is gaining in
+popularity, but whose origins are somewhat unclear. Suffice to say that it
+relates to modern double-entry book keeping[^1] and has lately been popularized
+in a series of talks by Greg Young[^5] [^4]. The core idea of event sourcing is that
+application state is derived from all past events which are records of facts;
+just like your bank account's balance is the sum of all transactions. Besides
+banking, a prime example of event sourcing is [git](https://git-scm.com/). A
+version control software used by the vast majority of the software industry.  In
+this work, I explain event sourcing for computational systems biologists and
+outline several applications of this technique for the task of automating
+generating standards compliant models, provide critical infrastructure, foster
+collaboration, and subsequently improve reproducibility.
 
-[^1]: [According to Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the practice started around the 13th century in Europe. Probably much earlier in other parts of the world [author's note].
-[^4]: See, for example, [this recording at GOTO 2014](https://www.youtube.com/watch?v=8JKjvY4etTY). A book on the topic is apparently in preparation.
+[^1]: [According to
+Wikipedia](https://en.wikipedia.org/wiki/Double-entry_bookkeeping#History), the
+practice started around the 13th century in Europe. Probably much earlier in
+other parts of the world [author's note].
+[^4]: See, for example, [this recording at GOTO
+2014](https://www.youtube.com/watch?v=8JKjvY4etTY). A book on the topic is
+apparently in preparation.
+[^5]: The technique was possibly first published in rudimentary form by Martin
+Fowler [on his blog](https://martinfowler.com/eaaDev/EventSourcing.html) in
+2005.
+
+In trying to design and understand event-sourced systems, there have been
+numerous influences. Early on, Domain-Driven Design's [DDD -
+@evans_domain-driven_2004] aggregates and the ubiquitous language were a large
+inspiration. The ubiquitous language means that all software artifacts, like
+documentation, code, and tests are using the same concepts and language as the
+domain being modelled.  Aggregates are objects that ensure the consistency of
+their data within their context. That means, they contain rules that may
+disallow commands issued to the aggregate from succeeding and thus control the
+state of the aggregate. Greg Young's work on Command Query Responsibility
+Segregation (CQRS) was key to more functional implementations of event sourcing
+and led to the realization that it is not only possible, but in fact desirable
+to have multiple specialized read models to serve information queries. Designing
+event-sourced systems was helped by a workshop format called Event Storming by
+Alberto Brandolini[^6]. Today, many practitioners follow Adam Dymitruk's Event
+Modeling[^7], which was recently more formally published by
+@dilger_understanding_2024.
+
+[^6]: https://www.eventstorming.com
+[^7]: https://eventmodeling.org
 
 ## Methods
 
 ### Event Sourcing in a Nut Shell
 
-Most software applications, such as those used for computational simulations of biological systems, store the current state, for example, the state of a model, its parameter values, and so on, in memory. In order to reuse that current state, and avoid complete loss of all information stored in memory at shutdown, most applications allow for storing the state in a file or database. That means that we might make many modifications to the application state, but only ever store a representation of the latest state. With event sourcing, however, every change to the application state is recorded as a sequential event. It is that sequence of events that is then stored in a more permanent fashion in a file or database; and the application state can be restored by reading the series of events and applying their recorded changes.
+Most software applications, such as those used for computational simulations of
+biological systems, store the current state, for example, the state of a model,
+its parameter values, and so on, in memory. In order to reuse that current
+state, and avoid complete loss of all information stored in memory at shutdown,
+most applications allow for storing the state in a file or database. That means
+that we might make many modifications to the application state, but only ever
+store a representation of the latest state. With event sourcing, however, the
+application state is derived from sequential events. It is that sequence of
+events that is then stored in a more permanent fashion in a file or database;
+and the application state can be restored by reading the series of events and
+applying their recorded information.
 
 What are the benefits of storing all sequential records of change? Throughout this work, I will attempt to convince you of several advantages of event sourcing, most importantly, the improved reproducibility afforded by this technique.
 
 #### Liquid Handling Example
 
-Let us consider the following scenario, we need to generate a growth medium for our cell cultures. We are in possession of a protocol that lists in minute detail which materials to combine in what quantities in order to arrive at the final growth medium in exact proportions. When we follow the protocol, we can assume that we arrive at the correct medium. However, the only way to confirm that fact, is to perform an intricate chemical analysis of our solution. The receptacle with our solution presents our "application state".
+Let us consider the following scenario, we need to generate a growth medium for
+our cell cultures. We are in possession of a protocol that lists in minute
+detail which materials to combine in what quantities in order to arrive at the
+final growth medium in exact proportions. When we follow the protocol, we can
+assume that we arrive at the correct medium. However, the only way to confirm
+that fact, is to perform an intricate chemical analysis of our solution. The
+receptacle with our chemical solution represents our "application state".
 
-Let us then consider a hypothetical liquid handling robot with an event sourced operating software. We can add reservoirs with basic components of our medium to the robot and we can load a 96-well plate (0.2 mL volume per well) where to perform the mixing. Let's say we add reservoirs with water, glucose solution, and phosphate buffer as sources. We would also need to add a supply of pipetting tips. The software application for operating the robot has objects representing its state. Let us assume that those objects are `Reservoir`, `TargetPlate`, and `HandlingArm`. Operations are performed via an application interface called `LiquidHandlingApplication`. They might have attributes and methods as shown in @fig-liquid-classes.
+Let us then consider a hypothetical, vastly simplified, liquid handling robot
+with an event-sourced operating software. The event model
+(@fig-liquid-handling), clearly shows that we can add reservoirs with basic
+components of our medium to the robot and we can load a 96-well plate (0.2 mL
+volume per well) where to perform the mixing. We can also see a list of
+protocols and create a new protocol. Within a single protocol, we can see the
+individual steps and add further liquid transfers as new steps.
 
-![Classes used in the operating software of a hypothetical liquid handling robot. The basic type notation is borrowed from Python. The methods are shown without parameters.](./images/out/liquid-classes.svg){#fig-liquid-classes}
+![A simplified event model showing the addition of reservoirs, target well plates, protocols, and liquid transfers. Commands are shown in light blue, events are orange, and read models are light green.](./images/liquid_handling.png){#fig-liquid-handling}
 
-Our protocol for the growth medium might ask for 90% water, 9% glucose solution, and 1% phosphate buffer. We might therefore issue the following instructions.
+Assuming that adding reservoirs with water, glucose solution, and phosphate
+buffer as sources will automatically be detected by a sensor, three commands are
+issued by the sensor and assuming that there are no errors, three events record
+those facts (see @fig-reservoirs-installed). Additionally, we install a 96-well
+plate and another sensor identifies its configuration and issues a corresponding
+command. Assuming the command succeeds, a **Target Plate Installed** event is
+recorded.
 
-```{#lst-liquid-create-commands .python lst-cap="Commands for the hypothetical liquid handling robot setup."}
-app = LiquidHandlingApplication()
-water = app.add_reservoir("water")
-glucose = app.add_reservoir("glucose solution")
-phosphate = app.add_reservoir("phosphate buffer")
-target = app.add_target_plate(96_WELL_FORMAT)
-```
+![Three sequential events that record information about reservoirs that were installed in the robot.](./images/reservoirs_installed.png){#fig-reservoirs-installed}
 
-The above commands (@lst-liquid-create-commands), when executed successfully, will lead to a sequence of events being recorded that might look like below (@fig-liquid-create-events).
 
-![The sequence of events emitted as a consequence of the setup commands.](./images/out/liquid-create-events.svg){#fig-liquid-create-events}
+What can we already learn from the few events shown in @fig-reservoirs-installed?
 
-What can we already learn from the few events shown in @fig-liquid-create-events?
+1. By convention, the names of events are chosen in past tense, because they are records of information.
+2. There is a global order to the events as denoted here by the left-to-right arrangement.
 
-1. By convention, the names of events are chosen in past tense, because they are records of things that have already happened.
-2. There is a global order to the events as denoted here by the `sequence_index` property and shown visually by the order following the arrows from the top left.
-3. The changes to instance attributes are recorded in the events. In this case, all the events shown are special "creation" events that initialize all attributes.
+Our protocol for the growth medium might ask for 90% water, 9% glucose solution,
+and 1% phosphate buffer. We might therefore issue the following instructions.
+Using the protocols interface, we first create a new protocol with the name,
+"Minimal Glucose Growth Medium". We then define three steps for our protocol:
 
-In a real application we would want to add a few more properties to our events, such as which class they belong to, the identifier of the instance they describe, a unique identifier for the event itself, and more. We can then issue further commands to perform the transfer of liquids as described in our protocol (@lst-liquid-transfer-commands).
+1. Transfer 180 $\mu$L of water from its reservoir to the target plate.
+2. Transfer 18 $\mu$L of glucose solution from its reservoir to the target plate.
+3. Transfer 2 $\mu$L of phosphate buffer from its reservoir to the target plate.
 
-```{#lst-liquid-transfer-commands .python lst-cap="Commands for transferring liquids as required by our experimental protocol."}
-app.transfer_liquid(water, target, 0.18)
-app.transfer_liquid(glucose, target, 0.018)
-app.transfer_liquid(phosphate, target, 0.002)
-```
+When these commands are issued, the operating software will use the information
+present to perform a range of consistency checks. Does the reservoir hold enough
+liquid for the requested transfer? Is there enough volume left in the target
+plate to accept the liquid transfer? There might be further rules as to which
+chemicals are safe to combine, and so on. Assuming that all consistency checks
+pass, three **Liquid Transferred** events are recorded. We could then execute our protocol and let the robot prepare our growth medium.
 
-The first of those liquid transfer commands might trigger a much longer series of events that globally continues from those shown in @fig-liquid-create-events. Due to the number of events, we ignore the second and third command in @lst-liquid-transfer-commands. The events are shown in @fig-liquid-transfer-events.
+What can we learn from this train of thoughts in addition to what we have already deduced?
 
-![The sequence of events emitted as a consequence of the first command transferring water from its reservoir to the target plate.](./images/out/liquid-transfer-events.svg){#fig-liquid-transfer-events}
+1. Events only store specific properties related to what is being recorded.
+2. The sequence of events provides a detailed log of everything that occurred in the system.
 
-What can we learn from the events shown in @fig-liquid-transfer-events in addition to what we have already deduced?
+All the events together form what is called the **event log** and it is of
+central importance. If we want to know (query) the state of an instance at a
+certain point in the sequence of events, we need to apply the information
+recorded in all events concerning that instance in order to derive the state.
+This process is called a **projection**. We have seen that events can be quite
+verbose. Fortunately, computational storage space is generally fairly cheap.
 
-1. The events only record those attributes that were actually changed by a command.
-2. The events provide a detailed log of everything that occurred in the system.
+After issuing all commands and executing our protocol, the resulting growth medium in the wells is the same as if we followed the experimental protocol manually. That means, the "real world" state is the same as before, however, the event log enables us to do more.
 
-All the events shown in @fig-liquid-create-events and @fig-liquid-transfer-events together form what is called the **event log** and it is of central importance. If we want to know (query) the state of an instance at a certain point in the sequence of events, we need to apply the changes recorded in all events concerning that instance in order to derive the state. This process is called a **projection**. We have seen that events can be quite verbose. Fortunately, computational storage space is generally fairly cheap. If projections become too computationally costly, we can resolve the problem by storing **snapshots** of a current instance's state in the event log at regular intervals.
-
-After issuing all commands shown in @lst-liquid-create-commands and @lst-liquid-transfer-commands, the resulting growth medium in the wells is the same as if we followed the experimental protocol manually. That means, the "real world" state is the same as before, however, the event log enables us to do more.
-
-1. We can analyze the sequence of events to show that we have correctly implemented the experimental protocol. This is much more convenient than having to perform chemical analyses on the resulting medium.
-2. We can investigate the sequence of events at any point that we desire in order to identify potential mistakes that we may have made. This is also called **replaying** events.
-3. Similarly, we may look for opimtized sequences of events. This may be done by simulating the operation of the liquid handling robot and exploring alternative orders of commands.
-4. We can copy our event log and hand it to somebody else. That other person can then perfectly replicate our process by replaying the events and arriving at the same outcome. This serves the same purpose as a published experimental protocol but provides much stronger reproducibility guarantees as the operating software assures that we perform a perfect replicate of the process.
-
-### Command Query Responsibility Segregation
-
-A short summary of **Command Query Responsibility Segregation** (CQRS) is that we can use different models (formats) to update state from models to read state. Changing state is done by commands, whereas reading state is performed via queries. It is important to note that the command model requires its own representation of the state in order to determine whether a certain command may be performed. In the previously described liquid handling scenario, we were already implicitly using CQRS, even though we did not make use of alternative read models. However, those alternatives will be important in applications described later on.
+1. We can analyze the sequence of events to show that we have correctly
+implemented the experimental protocol. This is much more convenient than having
+to perform chemical analyses on the resulting medium.
+2. We can investigate the sequence of events at any point that we desire in
+order to identify potential mistakes that we may have made. This is also called
+**replaying** events.
+3. Similarly, we may look for optimized sequences of events. This may be done by
+simulating the operation of the liquid handling robot and exploring alternative
+orders of commands and events.
+4. We can copy our event log and hand it to somebody else. That other person can
+then perfectly replicate our process by replaying the events and arriving at the
+same outcome. This serves the same purpose as a published experimental protocol
+but provides much stronger reproducibility guarantees as the operating software
+assures that we perform a perfect replicate of the process.
 
 ## Results
 
-In the following, I will outline a few examples that are enabled by applying event sourcing to computational systems biology. They each highlight specific advantages of this technique and in particular the benefits of an event log. We already discussed general benefits in the liquid handling example section above, but I want to emphasize again how the event log can alleviate one particular problem observed with current publication practices. For convenience, typically only a single SBML document describing a particular model state is attached to a publication. However, an analysis described in a publication needs to explore many variations of this model. In the best case, these alternative scenarios are available as source code files that load the SBML document and modify the model further via code instructions. In the worst case, such modifications are not even described in text form, thus severly hampering reproducbility of published results.
+In the following, I will outline a few examples that are enabled by applying
+event sourcing to computational systems biology. They each highlight specific
+advantages of this technique and in particular the benefits of an event log. We
+already discussed general benefits in the liquid handling example above,
+but I want to emphasize again how the event log can alleviate 
+problems observed with current publication practices. For convenience, typically
+only a single SBML document describing a particular model state is attached to a
+publication. However, an analysis described in a publication needs to explore
+many variations of this model. In the best case, these alternative scenarios are
+available as source code files that load the SBML document and modify the model
+further via code instructions. In the worst case, such modifications are not
+even described in text form, thus severely hampering reproducibility of published
+results.
 
-With an event-sourced simulation software, it would be possible to provide the full event log and specify which published result was obtained at which point in the event log. Others can then replay the events to that point in the log, and reproduce the model state perfectly.
+With an event-sourced simulation software, it would be possible to provide the
+full event log and specify which published result was obtained at which point in
+the event log. Others can then replay the events to that point in the log, and
+reproduce the model state perfectly.
 
 ### Contribution History
 
-Scientific contributions and public records demonstrating said contributions, are of vital importance to academics. In the context of computational systems biology, one major contribution is the definition of a model for simulation. The _de facto_ standard for defining such models in a machine readable format is the Systems Biology Markup Language (SBML)[@hucka_systems_2019]. Although the SBML specification[^2] allows for recording contributions at a very detailed level, i.e., every element in the document may contain annotations with contributors described in the vCard4 format[^3], in practice, I have only seen this done at the level of the entire model.
+Scientific contributions and public records demonstrating said contributions, are of vital importance to academics. In the context of computational systems biology, one major contribution is the definition of a model for simulation. The _de facto_ standard for defining such models in a machine readable format is the Systems Biology Markup Language [SBML - @hucka_systems_2019]. Although the SBML specification[^2] allows for recording contributions at a very detailed level, i.e., every element in the document may contain annotations with contributors described in the vCard4 format[^3], in practice, I have only seen this done at the level of the entire model.
 
 [^2]: [SBML Level 3 Version 2 Core, Section 6.6, pp. 105.](https://identifiers.org/combine.specifications:sbml.level-3.version-2.core.release-2)
 [^3]: <https://datatracker.ietf.org/doc/html/rfc6350>
 
-It is certainly not surprising that the full amount of detail afforded by the SBML specification is not used, as it would be very cumbersome to manually track this information. However, if we were to create an SBML document with an event sourced software, we could identify each user of that software by, for example, an [ORCID](https://orcid.org/), and reference the user in the event that is recording a change to the model. This could serve as an audit trail of contributions to the model. Such a software would then require functionality to transform the event log into an SBML document that correctly uses SBML annotations to detail the modification history of every model element. Other tools could then create accurate contribution statistics from such SBML documents. This example already leads us to the next section, since creating an SBML document from an event log is nothing else but an alternative read model.
+It is certainly not surprising that the full amount of detail afforded by the
+SBML specification is not used, as it would be very cumbersome to manually track
+this information. However, if we were to create an SBML document with an event
+sourced software, we could identify each user of that software by, for example,
+an [ORCID](https://orcid.org/), and reference the user in the event that
+recorded the information. This could serve as an audit trail of contributions to
+the model. Such a software would then require functionality to transform the
+event log into an SBML document that correctly uses SBML annotations to detail
+the modification history of every model element. Other tools could then create
+accurate contribution statistics from such SBML documents. This example already
+leads us to the next section, since creating an SBML document from an event log
+is nothing else but a projection or alternative read model.
 
 ### Alternative Read Models
 
-Let us assume that we have an event-sourced software for manipulating computational systems biology models. Most often those will be either kinetic or constraint-based models. Our software will contain a **model manipulation application** which implements the command model. Our application will produce an event log that can then be read by other applications. Those other applications can then project those events into other formats. Importantly, those formats may only be used for reading, i.e., they are query models, whereas modifications must be made through the previous command model. Our event-sourced software may thus consist of a system of applications with one command model and several downstream query models constructed from following one or more upstream event logs. An example of such a system is shown in @fig-alternative-models.
+Let us assume that we have an event-sourced software for manipulating computational systems biology models. Most often, those will be either kinetic or constraint-based models. Our software will contain a **model manipulation application**. Our application will produce an event log that can then be read by other applications. Those other applications can then project those events into other formats. Importantly, those formats may only be used for reading, i.e., they are query models, whereas modifications must be made through commands on the previous model manipulation application. Our event-sourced software may thus consist of a system of applications with several downstream query models constructed from following one or more upstream event logs. An example of such a system is shown in @fig-alternative-models.
 
-![.](./images/out/alternative-models.svg){#fig-alternative-models}
+![A system of event-sourced applications with one leader and three followers.](./images/out/alternative-models.svg){#fig-alternative-models}
 
-In @fig-alternative-models, we see three examples of downstream applications that subscribe to the event log of the model manipulation application. It is important to note that each downstream application will create different projections of those events. The shown SBML validator will probably make use of every detail in every event, meticulously mapping all content to an SBML document and validating that. A model simulation application for, e.g., a constraint-based metabolic model will likely only be interested in events describing the stoichiometry of reactions and metabolites, projecting that information into linear constraints of a mathematical optimization problem. A fictitious model test suite will use yet another set of events depending on the requirements of its checks. It might even include a model simulation application for functional tests.
+In @fig-alternative-models, we see three examples of downstream applications that subscribe to the event log of the model manipulation application. It is important to note that each downstream application will create different projections of those events. The shown SBML validator will probably make use of every detail in every event, meticulously mapping all content to an SBML document and validating that. A model simulation application for, e.g., a constraint-based metabolic model will likely only be interested in events describing the stoichiometry of reactions and metabolites, projecting that information into (linear) constraints of a mathematical optimization problem. A fictitious model test suite will use yet another set of events depending on the requirements of its checks. It might even include a model simulation application for functional tests.
 
 ### Local Versus Remote
 
-Another important benefit of event-driven software architectures is that they afford a fair amount of asynchronicity and decoupling in systems. Asynchronicity because a system only needs to react to events when they arrive, and decoupling because upstream applications need not know anything about the downstream subscribers to their event logs. For these reasons, it is a smaller change to switch from a local-only to a remote implementation. A downside of events is increased latency due to message passing. An example of a seamless change between a local and a remote implementation is event persistence as shown in @fig-event-log-persistence. A remote database may be hosted anywhere in the cloud, but even our different applications from @fig-alternative-models might be globally distributed by using an appropriate event bus.
+Another important benefit of event-driven software architectures is that they afford asynchronicity and decoupling in systems. Asynchronicity because a system only needs to react to events when they arrive, and decoupling because upstream applications need not know anything about the downstream subscribers to their event logs. For these reasons, it is a smaller change to switch from a local-only to a remote implementation. A downside of events is increased latency due to message passing. An example of a seamless change between a local and a remote implementation is event persistence as shown in @fig-event-log-persistence. A remote database may be hosted anywhere in the cloud, but even our different applications from @fig-alternative-models might be globally distributed by using an appropriate event bus.
 
-![.](./images/out/event-log-persistence.svg){#fig-event-log-persistence}
+![Persistence of events may happen in different locations. On the local filesystem; in local or remote databases; or in cloud hosted event stores.](./images/out/event-log-persistence.svg){#fig-event-log-persistence}
 
 We can take this further by considering that a user of this software may not even need to have installed our software system, but can interact with the model manipulation and other applications via a client that performs **remote procedure calls** (RPCs). This client might either be a graphical interface or a small library of functions that exposes the **application programming interface** (API) of our system. These two modes of interaction are visualized in @fig-escsbs. Besides circumventing installation, this design has two additional benefits:
 
-1. Mathematical solvers for a model simulation application may be proprietary or particularly difficult to install. In this way, we can offer these capabilities to a wider user audience. Something similar was done in @shaikh_biosimulators_2022.
+1. Mathematical solvers for a model simulation application may be proprietary or particularly difficult to install. In this way, we can offer these capabilities to a wider audience. Something similar was done by @shaikh_biosimulators_2022.
 2. It is less work to develop and maintain a client library compared to the full system. Thus we can reach a larger user base by providing clients in multiple programming languages.
 
-![.](./images/out/escsbs.svg){#fig-escsbs}
+![A depiction of a hypothetical system that exposes a frontend application to browsers, as well as a client library that directly communicates with a backend API.](./images/out/escsbs.svg){#fig-escsbs}
 
-A popular example of such a setup is [Jupyter](https://jupyter.org/) [@b_e_granger_jupyter_2021], which offers a rich Python, Julia, or R interpreter via a web interface. The concept of managed sessions that users can connect to from any device is also extremely interesting in this context.
+A popular example of such a setup is [Jupyter](https://jupyter.org/)
+[@b_e_granger_jupyter_2021], which offers a rich Python, Julia, or R interpreter
+via a web interface. The concept of managed sessions that users can connect to
+from any device is also extremely interesting in this context.
 
 ### Collaboration Platform
 
-As mentioned in the introduction, one of the premier examples of event-sourced software is [git](https://git-scm.com/). "Git is a free and open source distributed version control system [...]". Distributed means that git affords both local and remote work between multiple parties. The central concept of git is that a user can record changes to files under git's control. Each recorded set of changes is an event, called commit. Git allows for a diverging event log, such a diversion is called a branch. Git also has facilities for merging branches back together and resolving conflicts between the branches.
+As mentioned in the introduction, one of the premier examples of event-sourced
+software is [git](https://git-scm.com/). "Git is a free and open source
+distributed version control system [...]". Distributed means that git affords
+both local and remote work between multiple parties. The central concept of git
+is that a user can record changes to files under git's control. Each recorded
+set of changes is an event, called commit. Git allows for a diverging event log,
+such a diversion is called a branch. Git also has facilities for merging
+branches back together and resolving conflicts between the branches.
 
-If we take all of the above application examples together, we might arrive at the concept of an online collaboration platform, just as, for example, [GitHub](https://github.com/) and [GitLab](https://gitlab.com/) have done for git. We already suggested using git as part of the workflow to develop metabolic models (in SBML) in @lieven_memote_2020, but here we can develop these concepts further into a full service platform.
+If we take all of the above application examples together, we might arrive at
+the concept of an online collaboration platform, just as, for example,
+[GitHub](https://github.com/) and [GitLab](https://gitlab.com/) have done for
+git. We already suggested using git as part of the workflow to develop metabolic
+models (in SBML) in @lieven_memote_2020, but here we can develop these concepts
+further into a full service platform.
 
-Such a full service online collaboration platform has many fine details to decide on, but in broad strokes it might provide the following features:
+Such a full service online collaboration platform has many fine details to
+decide on, but in broad strokes it might provide the following features:
 
 * As outlined above, such a platform should offer both graphical and programmatic interfaces to its API.
 * Every user contribution should be tracked and exposed.
@@ -167,9 +322,20 @@ Such a full service online collaboration platform has many fine details to decid
 
 ## Discussion
 
-In this work, I have introduced the event sourcing technique and outlined several potential applications to the field of computational systems biology. I am convinced that the complete history of changes to models provided by their event logs, as well as the ability to exchange and perfectly reproduce processes via the event log, can overcome most of today's challenges with reproducibility. Furthermore, the new possibilities for collaboration and transparency have the potential to transform and accelerate how we work in computational systems biology today.
+In this work, I have introduced the event sourcing technique to computational
+systems biology and outlined several potential applications in this field. I am
+convinced that the complete history of changes to models provided by their event
+logs, as well as the ability to exchange and perfectly reproduce processes via
+the event log, can overcome most of today's challenges with reproducibility.
+Furthermore, the new possibilities for collaboration and transparency have the
+potential to transform and accelerate how we work in computational systems
+biology today. By cleverly chaining applications that follow each others' event
+logs, standards-compliant outputs could be produced automatically, avoiding
+countless hours of manual labor as well as mistakes.
 
-Although event sourcing as a technique certainly also has its drawbacks, I see the main challenges for bringing the benefits to bear in finding the right funding that can attract the skilled experts required.
+Although event sourcing as a technique certainly also has its drawbacks, I see
+the main challenges for bringing the benefits to bear in finding the right
+funding that can attract the skilled experts required.
 
 ## Acknowledgements
 
