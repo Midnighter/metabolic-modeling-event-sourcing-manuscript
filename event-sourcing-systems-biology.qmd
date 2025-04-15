@@ -7,12 +7,46 @@ format:
     documentclass: scrartcl
 author:
   - name: Moritz E. Beber
-    given: Moritz E.
+    given: Moritz
     family: Beber
     orcid: 0000-0003-2406-1978
+    email: moritz.beber@igdore.org
+    roles: ['conceptualization', 'editing']
+    affiliations:
+      - ref: igd
+affiliations: 
+  - id: igd
+    name: Institute for Globally Distributed Open Research and Education (IGDORE)
 abstract: >
-  We have a reproducibility crisis! Event sourcing may help. Honest!
-keywords: [computational systems biology, metabolic modeling, event sourcing, reproducibility]
+  The vast majority of scientific contributions in the field of computational
+  systems biology are based on mathematical models. These models can be broadly
+  classified as either dynamic (kinetic) models or steady-state
+  (constraint-based) models. They are often described in specific markup
+  languages whose purpose is to aid in the distribution and standardization of
+  models. Despite numerous established standards in the field, reproducibility
+  remains problematic due to the substantial effort required for compliance,
+  diversity of implementations, and the lack of proportionate rewards for
+  researchers.
+  
+  This article explores the application of event sourcing - a software
+  engineering technique where system state is derived from sequential recorded
+  events - to address reproducibility challenges in computational systems
+  biology. Event sourcing, exemplified by systems like git, offers a promising
+  solution by maintaining complete, immutable records of all changes to a model.
+  Through examples including leader and follower applications, local and remote
+  computation, and contribution tracking, this work demonstrates how
+  event-sourced systems can automate standards compliance, provide comprehensive
+  audit trails, enable perfect replication of processes, facilitate
+  collaboration, and generate multiple specialized read models from a single
+  event log. An implementation of the outlined principles has the potential to
+  transform computational systems biology by providing unprecedented
+  transparency, reproducibility, and collaborative capabilities, ultimately
+  accelerating research through more effective model reuse and integration.
+  
+  An event-sourced approach to modeling in computational systems biology may act
+  as an example to related disciplines and contribute to ending the
+  reproducibility crisis plaguing multiple major fields of science.
+keywords: [computational systems biology, metabolic modeling, event sourcing, event modeling, reproducibility]
 reference-section-title: References
 bibliography: references.bib  
 license: "CC BY-SA 4.0"
@@ -333,9 +367,10 @@ biology today. By cleverly chaining applications that follow each others' event
 logs, standards-compliant outputs could be produced automatically, avoiding
 countless hours of manual labor as well as mistakes.
 
-Although event sourcing as a technique certainly also has its drawbacks, I see
-the main challenges for bringing the benefits to bear in finding the right
-funding that can attract the skilled experts required.
+Although event sourcing, as a technique that represents a paradigm shift,
+certainly presents complications, I see the main challenge for bringing its
+benefits to bear in finding the right funding that can attract the skilled
+experts required to build and support a large software ecosystem. 
 
 ## Acknowledgements
 
