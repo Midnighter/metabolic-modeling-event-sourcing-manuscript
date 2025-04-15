@@ -1,5 +1,5 @@
 ---
-title: "In Pursuit of Total Reproducilibity"
+title: "In Pursuit of Total Reproducibility"
 subtitle: "Marrying Event Sourcing with Computational Systems Biology"
 format:
   html: default
@@ -69,7 +69,7 @@ crossref:
 
 ## Introduction {#sec-intro}
 
-### Reproducilibity Crisis
+### Reproducibility Crisis
 
 Although the field of computational systems biology is, in principle, in the
 enviable situation to be able to completely and deterministically define its own
