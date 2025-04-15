@@ -5,6 +5,18 @@ format:
   html: default
   pdf:
     documentclass: scrartcl
+    papersize: a4
+    link-citations: true
+    keep-tex: true
+    template-partials: 
+      - _extensions/title.tex
+    include-in-header:
+      text: |
+        \usepackage[noblocks]{authblk}
+        \renewcommand*{\Authsep}{, }
+        \renewcommand*{\Authand}{, }
+        \renewcommand*{\Authands}{, }
+        \renewcommand\Affilfont{\small}
 author:
   - name: Moritz E. Beber
     given: Moritz
